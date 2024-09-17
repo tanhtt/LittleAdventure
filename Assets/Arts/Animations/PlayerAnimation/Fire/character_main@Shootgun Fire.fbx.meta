@@ -33,10 +33,10 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Shootgun Firing Rifle
+      name: Shootgun Fire
       takeName: mixamo.com
       internalID: -203655887218126122
-      firstFrame: 0
+      firstFrame: 4
       lastFrame: 30
       wrapMode: 0
       orientationOffsetY: 0

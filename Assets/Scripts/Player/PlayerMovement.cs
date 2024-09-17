@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private PlayerInputs playerInputs;
-
+    private Player player;
     private CharacterController characterController;
 
     [Header("Movement Info")]
@@ -27,17 +26,14 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 moveInput;
     private Vector2 aimInput;
 
-    private void Awake()
-    {
-        AssignInputsEvent();
-    }
-
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         animator = transform.GetComponentInChildren<Animator>();
+        player = GetComponent<Player>();
 
         movementSpeed = walkSpeed;
+        AssignInputsEvent();
     }
 
     private void Update()
@@ -45,11 +41,6 @@ public class PlayerMovement : MonoBehaviour
         HandleMovement();
         HandleAimTowardMouse();
         AnimationController();
-    }
-
-    private void Shoot()
-    {
-        animator.SetTrigger("Fire");
     }
 
     private void AnimationController()
@@ -75,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 
             transform.forward = lookingDir;
 
-            aimTransform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            aimTransform.position = new Vector3(hit.point.x, transform.position.y + 1, hit.point.z);
         }
     }
 
@@ -102,18 +93,15 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    #region Input action
     private void AssignInputsEvent()
     {
-        playerInputs = new PlayerInputs();
+        PlayerInputs playerInputs = player.PlayerInputs;
 
         playerInputs.Player.Movement.performed += context => moveInput = context.ReadValue<Vector2>();
         playerInputs.Player.Movement.canceled += context => moveInput = Vector2.zero;
 
         playerInputs.Player.Aim.performed += context => aimInput = context.ReadValue<Vector2>();
         playerInputs.Player.Aim.canceled += context => aimInput = Vector2.zero;
-
-        playerInputs.Player.Fire.performed += context => Shoot();
 
         playerInputs.Player.Run.performed += context =>
         {
@@ -127,16 +115,4 @@ public class PlayerMovement : MonoBehaviour
             movementSpeed = walkSpeed;
         };
     }
-
-    private void OnEnable()
-    {
-        playerInputs.Enable();
-    }
-
-    private void OnDisable()
-    {
-        playerInputs.Disable();
-    }
-
-    #endregion
 }
