@@ -11,20 +11,17 @@ public class PlayerMovement : MonoBehaviour
     private float movementSpeed;
     [SerializeField] private float walkSpeed;
     [SerializeField] private float runSpeed;
+    [SerializeField] private float turnSpeed;
     [SerializeField] private float gravityScale = 9.81f;
-
-    [Header("Aim Info")]
-    [SerializeField] private Transform aimTransform;
     [SerializeField] private Vector3 lookingDir;
-    [SerializeField] private LayerMask layerMask;
+
 
     [Header("Animation Info")]
     private Animator animator;
     [SerializeField] private bool isRunning;
 
     private float verticalVelocity;
-    private Vector2 moveInput;
-    private Vector2 aimInput;
+    public Vector2 moveInput { get; private set; }
 
     private void Start()
     {
@@ -57,17 +54,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleAimTowardMouse()
     {
-        Ray ray = Camera.main.ScreenPointToRay(aimInput);
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, layerMask))
-        {
-            lookingDir = hit.point - transform.position;
-            lookingDir.y = 0f;
-            lookingDir.Normalize();
+        lookingDir = player.playerAim.GetHitInfo().point - transform.position;
+        lookingDir.y = 0f;
+        lookingDir.Normalize();
 
-            transform.forward = lookingDir;
+        Quaternion desiredRotation = Quaternion.LookRotation(lookingDir);
+        transform.rotation = Quaternion.Slerp(transform.rotation, desiredRotation, turnSpeed * Time.deltaTime);
 
-            aimTransform.position = new Vector3(hit.point.x, transform.position.y + 1, hit.point.z);
-        }
+        //transform.forward = lookingDir;
     }
 
     private void HandleMovement()
@@ -95,13 +89,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void AssignInputsEvent()
     {
-        PlayerInputs playerInputs = player.PlayerInputs;
+        PlayerInputs playerInputs = player.playerInputs;
 
         playerInputs.Player.Movement.performed += context => moveInput = context.ReadValue<Vector2>();
         playerInputs.Player.Movement.canceled += context => moveInput = Vector2.zero;
 
-        playerInputs.Player.Aim.performed += context => aimInput = context.ReadValue<Vector2>();
-        playerInputs.Player.Aim.canceled += context => aimInput = Vector2.zero;
+        
 
         playerInputs.Player.Run.performed += context =>
         {
