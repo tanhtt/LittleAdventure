@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private PlayerInputs playerInputs;
-    public PlayerInputs PlayerInputs { get { return playerInputs; } }
+    public PlayerInputs playerInputs {  get; private set; }
+    public PlayerAim playerAim { get; private set; }
+    public PlayerMovement playerMovement { get; private set; }
+    public PlayerWeaponsCtrl playerWeapon {  get; private set; }
 
     private void Awake()
     {
         playerInputs = new PlayerInputs();
+        playerAim = GetComponent<PlayerAim>();
+        playerMovement = GetComponent<PlayerMovement>();
+        playerWeapon = GetComponent<PlayerWeaponsCtrl>();
     }
 
     private void OnEnable()
