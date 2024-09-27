@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerWeaponsCtrl : MonoBehaviour
 {
+    private const float REFERENCE_BULLET_SPEED = 20;
+
     private Player player;
 
     [Header("Bullet Info")]
@@ -25,7 +27,10 @@ public class PlayerWeaponsCtrl : MonoBehaviour
     {
         GameObject newBullet = Instantiate(bulletPrefab, gunPoint.position, Quaternion.LookRotation(gunPoint.forward));
 
-        newBullet.GetComponent<Rigidbody>().velocity = BulletDirection() * bulletSpeed;
+        Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
+
+        rbNewBullet.mass = REFERENCE_BULLET_SPEED / bulletSpeed;
+        rbNewBullet.velocity = BulletDirection() * bulletSpeed;
 
         Destroy(newBullet, 10);
 
