@@ -6,8 +6,9 @@ using UnityEngine;
 public class PlayerWeaponsCtrl : MonoBehaviour
 {
     private const float REFERENCE_BULLET_SPEED = 20;
-
     private Player player;
+
+    [SerializeField] private Weapon currentWeapon;
 
     [Header("Bullet Info")]
     [SerializeField] private GameObject bulletPrefab;
@@ -16,15 +17,45 @@ public class PlayerWeaponsCtrl : MonoBehaviour
 
     [SerializeField] private Transform weaponHolder;
 
+    [Header("Inventory")]
+    [SerializeField] private int maxSlot = 2;
+    [SerializeField] private List<Weapon> weaponsList;
+
+
     private void Start()
     {
         player = GetComponent<Player>();
+        AssignInputEvents();
 
-        player.playerInputs.Player.Fire.performed += context => Shoot();
+        currentWeapon.ammo = currentWeapon.maxAmmo;
     }
+
+    #region Equip, Drop, Pickup weapon
+    private void EquipWeapon(int i)
+    {
+        currentWeapon = weaponsList[i];
+    }
+
+    private void DropWeapon()
+    {
+        if (weaponsList.Count <= 1) return;
+        weaponsList.Remove(currentWeapon);
+
+        EquipWeapon(0);
+    }
+
+    public void PickupWeapon(Weapon weapon)
+    {
+        if(weaponsList.Count >= maxSlot) return;
+
+        weaponsList.Add(weapon);
+    }
+    #endregion
 
     private void Shoot()
     {
+        if(currentWeapon.CanShoot() == false) return;
+
         GameObject newBullet = Instantiate(bulletPrefab, gunPoint.position, Quaternion.LookRotation(gunPoint.forward));
 
         Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
@@ -61,4 +92,17 @@ public class PlayerWeaponsCtrl : MonoBehaviour
 
     //    Gizmos.DrawLine(gunPoint.position, gunPoint.position + BulletDirection() * 25);
     //}
+
+    #region Assign Input
+    private void AssignInputEvents()
+    {
+        PlayerInputs controls = player.playerInputs;
+        controls.Player.Fire.performed += context => Shoot();
+
+        controls.Player.EquipSlot1.performed += context => EquipWeapon(0);
+        controls.Player.EquipSlot2.performed += context => EquipWeapon(1);
+
+        controls.Player.DropCurrentWeapon.performed += context => DropWeapon();
+    }
+    #endregion
 }

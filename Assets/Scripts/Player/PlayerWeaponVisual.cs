@@ -9,6 +9,8 @@ public class PlayerWeaponVisual : MonoBehaviour
     private Animator _animator;
     private bool isGrabbingWeapon;
 
+    //REset compontnt 
+
     #region Gun ref
     [SerializeField] private Transform[] weapons;
 
