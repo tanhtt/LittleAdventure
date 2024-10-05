@@ -5,15 +5,19 @@ using UnityEngine;
 public class PlayerAnimationEvents : MonoBehaviour
 {
     private PlayerWeaponVisual weaponVisualController;
+    private PlayerWeaponsCtrl weaponController;
 
     private void Start()
     {
         weaponVisualController = GetComponentInParent<PlayerWeaponVisual>();
+        weaponController = GetComponentInParent<PlayerWeaponsCtrl>();
     }
 
     public void ReloadIsOver()
     {
         weaponVisualController.ReturnRigWeightToOne();
+        weaponController.CurrentWeapon().RefillBullets();
+        weaponController.SetWeaponReady(true);
     }
 
     public void ReturnRig()
@@ -22,8 +26,10 @@ public class PlayerAnimationEvents : MonoBehaviour
         weaponVisualController.ReturnLeftHandIKWeightToOne();
     }
 
-    public void GrabWeaponIsOver()
+    public void EquipingWeaponIsOver()
     {
-        weaponVisualController.SetBusyGrabbingWeapon(false);
+        weaponController.SetWeaponReady(true);
     }
+
+    public void SwitchOnWeaponModel() => weaponVisualController.SwitchOnCurrentWeaponModel();
 }

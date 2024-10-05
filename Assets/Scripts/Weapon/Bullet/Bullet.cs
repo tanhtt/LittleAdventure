@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,7 +14,8 @@ public class Bullet : MonoBehaviour
 
         CreateImpactFX(collision);
 
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
+        ObjectPool.instance.ReturnBulletToPool(this.gameObject);
     }
 
     private void CreateImpactFX(Collision collision)

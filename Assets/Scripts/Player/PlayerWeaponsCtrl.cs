@@ -9,17 +9,17 @@ public class PlayerWeaponsCtrl : MonoBehaviour
     private Player player;
 
     [SerializeField] private Weapon currentWeapon;
+    private bool weaponReady;
 
     [Header("Bullet Info")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed;
-    [SerializeField] private Transform gunPoint;
 
     [SerializeField] private Transform weaponHolder;
 
     [Header("Inventory")]
     [SerializeField] private int maxSlot = 2;
-    [SerializeField] private List<Weapon> weaponsList;
+    [SerializeField] private List<Weapon> weaponSlots;
 
 
     private void Start()
@@ -27,71 +27,105 @@ public class PlayerWeaponsCtrl : MonoBehaviour
         player = GetComponent<Player>();
         AssignInputEvents();
 
-        currentWeapon.ammo = currentWeapon.maxAmmo;
+        currentWeapon.bulletsInMagazine = currentWeapon.totalReserveAmmo;
+
+        Invoke("EquipAtStart", .1f);
     }
 
-    #region Equip, Drop, Pickup weapon
+    #region Equip, Drop, Pickup, Ready weapon
+    private void EquipAtStart()
+    {
+        EquipWeapon(0);
+    }
+
     private void EquipWeapon(int i)
     {
-        currentWeapon = weaponsList[i];
+        SetWeaponReady(false);
+
+        currentWeapon = weaponSlots[i];
+
+        //player.playerWeaponVisual.SwitchOffWeaponModels();
+        player.playerWeaponVisual.PlayWeaponEquipAnimation();
     }
 
     private void DropWeapon()
     {
-        if (weaponsList.Count <= 1) return;
-        weaponsList.Remove(currentWeapon);
+        if (HasOnlyOneWeapon()) return;
+        weaponSlots.Remove(currentWeapon);
 
         EquipWeapon(0);
     }
 
     public void PickupWeapon(Weapon weapon)
     {
-        if(weaponsList.Count >= maxSlot) return;
+        if (weaponSlots.Count >= maxSlot) return;
 
-        weaponsList.Add(weapon);
+        weaponSlots.Add(weapon);
+        player.playerWeaponVisual.SwitchOnBackupWeaponModel();
     }
+
+    public void SetWeaponReady(bool ready) => weaponReady = ready;
+
+    public bool WeaponReady() => weaponReady;
     #endregion
 
     private void Shoot()
     {
-        if(currentWeapon.CanShoot() == false) return;
+        if (WeaponReady() == false) return;
+        if (currentWeapon.CanShoot() == false) return;
 
-        GameObject newBullet = Instantiate(bulletPrefab, gunPoint.position, Quaternion.LookRotation(gunPoint.forward));
+        //GameObject newBullet = Instantiate(bulletPrefab, gunPoint.position, Quaternion.LookRotation(gunPoint.forward));
+        GameObject newBullet = ObjectPool.instance.GetBullet();
+        newBullet.transform.position = GunPoint().position;
+        newBullet.transform.rotation = Quaternion.LookRotation(GunPoint().forward);
 
         Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
 
         rbNewBullet.mass = REFERENCE_BULLET_SPEED / bulletSpeed;
         rbNewBullet.velocity = BulletDirection() * bulletSpeed;
 
-        Destroy(newBullet, 10);
 
-        GetComponentInChildren<Animator>().SetTrigger("Fire");
+
+        player.playerWeaponVisual.PlayFireAnimation();
+    }
+
+    private void Reload()
+    {
+        SetWeaponReady(false);
+        player.playerWeaponVisual.PlayReloadAnimation();
     }
 
     public Vector3 BulletDirection()
     {
         Transform aim = player.playerAim.GetAimTransform();
-        Vector3 direction = (aim.position - gunPoint.position).normalized;
+        Vector3 direction = (aim.position - GunPoint().position).normalized;
 
-        //weaponHolder.LookAt(aim);
-        //gunPoint.LookAt(aim); TODO: Find better place to put it
-
-        if(player.playerAim.CanAimPrecisly() == false && player.playerAim.Target() == null)
+        if (player.playerAim.CanAimPrecisly() == false && player.playerAim.Target() == null)
         {
             direction.y = 0;
         }
         return direction;
     }
 
-    public Vector3 GunPoint => gunPoint.position;
+    public Weapon GetBackupWeapon()
+    {
+        foreach(Weapon weapon in weaponSlots)
+        {
+            if(weapon != currentWeapon)
+            {
+                return weapon;
+            }
+        }
+        return null;
+    }
 
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawLine(weaponHolder.position, weaponHolder.position + weaponHolder.forward * 25);
-    //    Gizmos.color = Color.yellow;
+    public Transform GunPoint() => player.playerWeaponVisual.GetCurrentWeaponModel().gunPoint;
+    public Weapon CurrentWeapon() => currentWeapon;
 
-    //    Gizmos.DrawLine(gunPoint.position, gunPoint.position + BulletDirection() * 25);
-    //}
+    public bool HasOnlyOneWeapon()
+    {
+        return weaponSlots.Count <= 1;
+    }
 
     #region Assign Input
     private void AssignInputEvents()
@@ -103,6 +137,14 @@ public class PlayerWeaponsCtrl : MonoBehaviour
         controls.Player.EquipSlot2.performed += context => EquipWeapon(1);
 
         controls.Player.DropCurrentWeapon.performed += context => DropWeapon();
+
+        controls.Player.Reload.performed += context =>
+        {
+            if (currentWeapon.CanReload() && WeaponReady())
+            {
+                Reload();
+            }
+        };
     }
     #endregion
 }
