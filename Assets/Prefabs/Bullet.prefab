@@ -128,6 +128,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletImpactFXPrefab: {fileID: 8339293583975215508, guid: 0625dca494523a64c9fba1835a03cae7,
     type: 3}
+  col: {fileID: 5088810946143095153}
+  meshRenderer: {fileID: 2576615165991655364}
+  trailRenderer: {fileID: 2969117205989650426}
 --- !u!96 &2969117205989650426
 TrailRenderer:
   serializedVersion: 3

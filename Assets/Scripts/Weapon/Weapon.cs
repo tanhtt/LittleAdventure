@@ -1,4 +1,5 @@
-using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum WeaponType
@@ -10,33 +11,125 @@ public enum WeaponType
     Sniper,
 }
 
+public enum ShootType
+{
+    Single,
+    Auto,
+}
+
 [System.Serializable]
 public class Weapon
 {
     public WeaponType weaponType;
+
+    [Header("Shooting Specifics")]
+    public ShootType shootType;
+    public float defaultFireRate;
+    public float fireRate = 1; // bullets per second
+    public int bulletsPerShot;
+    private float lastShootTime;
+
+    [Header("Burst")]
+    public bool burstAvailable;
+    public bool burstActive;
+
+    public int burstBulletsPerShoot;
+    public float burstFireRate;
+    public float bulletDelay;
+
+    [Header("Magazine Retails")]
     public int bulletsInMagazine;
     public int magazineCapacity;
     public int totalReserveAmmo;
 
     [Range(1f, 3f)]
-    [SerializeField] public float reloadSpeed = 1;
+    public float reloadSpeed = 1;
 
     [Range(1f, 3f)]
-    [SerializeField] public float equipmentSpeed = 1;
+    public float equipmentSpeed = 1;
 
-    [Space]
-    [SerializeField] public float fireRate = 1; // bullets per second
-    private float lastShootTime;
+    [Range(1f, 12f)]
+    public float gunDistance = 4f;
 
-    public bool CanShoot()
+    [Range(3f, 8f)]
+    public float cameraDistance = 6f;
+
+    [Header("Spread")]
+    public float baseSpread;
+    private float currentSpread;
+    public float maxSpread;
+
+    public float spreadIncreaseRate = .15f;
+
+    private float lastSpreadUpdateTime;
+    private float spreadCooldown = 1;
+
+    #region Burst
+
+    public bool BurstActivated()
     {
-        if(this.HaveEnoughBullet() && ReadyToFire())
+        if(weaponType == WeaponType.Shotgun)
         {
-            bulletsInMagazine--;
+            burstFireRate = 0;
             return true;
         }
-        return false;
+
+        return burstActive;
     }
+
+    public void ToggleBurst()
+    {
+        if(burstAvailable == false) return;
+
+        burstActive = !burstActive;
+
+        if (burstActive)
+        {
+            bulletsPerShot = burstBulletsPerShoot;
+            fireRate = burstFireRate;
+        }
+        else
+        {
+            bulletsPerShot = 1;
+            fireRate = defaultFireRate;
+        }
+    }
+
+    #endregion
+
+
+    #region Spread
+    public Vector3 ApplySpread(Vector3 originalDirection)
+    {
+        UpdateSpread();
+        float randomizeValue = Random.Range(-currentSpread, currentSpread);
+
+        Quaternion spreadRotation = Quaternion.Euler(0, randomizeValue, randomizeValue);
+
+        return spreadRotation * originalDirection;
+    }
+
+    private void UpdateSpread()
+    {
+        if(Time.time > lastSpreadUpdateTime + spreadCooldown)
+        {
+            currentSpread = baseSpread;
+        }
+        else
+        {
+            IncreaseSpread();
+        }
+        lastSpreadUpdateTime = Time.time;
+    }
+
+    private void IncreaseSpread()
+    {
+        currentSpread = Mathf.Clamp(currentSpread + spreadIncreaseRate, baseSpread, maxSpread);
+    }
+
+    #endregion
+
+    public bool CanShoot() => (HaveEnoughBullet() && ReadyToFire());
 
     public bool ReadyToFire()
     {
@@ -48,8 +141,6 @@ public class Weapon
         }
         return false;
     }
-
-
 
     #region Reload
     private bool HaveEnoughBullet() => bulletsInMagazine > 0;

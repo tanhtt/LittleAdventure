@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Priority: 10
   m_StandbyUpdate: 2
   m_LookAt: {fileID: 0}
-  m_Follow: {fileID: 91886952}
+  m_Follow: {fileID: 588677472}
   m_Lens:
     FieldOfView: 60.000004
     OrthographicSize: 5
@@ -187,7 +187,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 25277316}
   m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
-  m_LocalPosition: {x: 0, y: 2.598076, z: -1.5}
+  m_LocalPosition: {x: -0.23, y: 6.196152, z: -0.59200007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -204,7 +204,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 62708421}
-  - component: {fileID: 62708422}
   m_Layer: 8
   m_Name: LeftHand_TargetTransform
   m_TagString: Untagged
@@ -227,18 +226,6 @@ Transform:
   m_Father: {fileID: 1415713291}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &62708422
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 62708420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54753be1bb49884e8d97931d00f671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &86852200
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,32 +401,71 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentWeapon:
     weaponType: 0
+    shootType: 1
+    defaultFireRate: 0
+    fireRate: 1
+    bulletsPerShot: 0
+    burstAvailable: 0
+    burstActive: 0
+    burstBulletsPerShoot: 0
+    burstFireRate: 0
+    bulletDelay: 0
     bulletsInMagazine: 0
     magazineCapacity: 0
     totalReserveAmmo: 0
     reloadSpeed: 1
     equipmentSpeed: 1
-    fireRate: 1
+    gunDistance: 4
+    cameraDistance: 6
+    baseSpread: 0
+    maxSpread: 0
+    spreadIncreaseRate: 0.15
   bulletPrefab: {fileID: 1017296509373725203, guid: 43a0a86d30e530843900a2fed1444510,
     type: 3}
-  bulletSpeed: 4
+  bulletSpeed: 20
   weaponHolder: {fileID: 1059668915}
   maxSlot: 2
   weaponSlots:
-  - weaponType: 0
-    bulletsInMagazine: 0
-    magazineCapacity: 7
-    totalReserveAmmo: 16
+  - weaponType: 2
+    shootType: 1
+    defaultFireRate: 10
+    fireRate: 10
+    bulletsPerShot: 1
+    burstAvailable: 1
+    burstActive: 0
+    burstBulletsPerShoot: 3
+    burstFireRate: 1.5
+    bulletDelay: 0.1
+    bulletsInMagazine: 100
+    magazineCapacity: 100
+    totalReserveAmmo: 999
     reloadSpeed: 1
     equipmentSpeed: 1
-    fireRate: 5
+    gunDistance: 8
+    cameraDistance: 7
+    baseSpread: 5
+    maxSpread: 10
+    spreadIncreaseRate: 0.15
   - weaponType: 3
-    bulletsInMagazine: 0
-    magazineCapacity: 5
-    totalReserveAmmo: 17
+    shootType: 0
+    defaultFireRate: 1
+    fireRate: 1
+    bulletsPerShot: 5
+    burstAvailable: 0
+    burstActive: 0
+    burstBulletsPerShoot: 0
+    burstFireRate: 0
+    bulletDelay: 0
+    bulletsInMagazine: 100
+    magazineCapacity: 100
+    totalReserveAmmo: 999
     reloadSpeed: 1
     equipmentSpeed: 1
-    fireRate: 1
+    gunDistance: 4
+    cameraDistance: 3.5
+    baseSpread: 15
+    maxSpread: 15
+    spreadIncreaseRate: 0.15
 --- !u!114 &91886957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -495,7 +521,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 134686355}
-  - component: {fileID: 134686356}
   m_Layer: 8
   m_Name: LeftHand_TargetTransform
   m_TagString: Untagged
@@ -518,18 +543,6 @@ Transform:
   m_Father: {fileID: 1382453158}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -8.442, y: -82.878, z: 66.329}
---- !u!114 &134686356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 134686354}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54753be1bb49884e8d97931d00f671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &157097124
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,6 +590,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 1
+  hangType: 2
 --- !u!1 &159714216
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,7 +764,7 @@ MonoBehaviour:
   m_TargetMovementOnly: 1
   m_ScreenX: 0.5
   m_ScreenY: 0.5
-  m_CameraDistance: 3
+  m_CameraDistance: 6
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
@@ -922,7 +936,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
-  m_LocalPosition: {x: 0, y: 2.598076, z: -1.5}
+  m_LocalPosition: {x: -0.23, y: 6.196152, z: -0.59200007}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1015,7 +1029,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &407627026
 Transform:
   m_ObjectHideFlags: 0
@@ -1023,8 +1037,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 407627025}
-  m_LocalRotation: {x: 0.7242965, y: 9.8953e-10, z: 0.00000007665947, w: 0.6894887}
-  m_LocalPosition: {x: 0.122, y: -0.0225, z: -0.1195}
+  m_LocalRotation: {x: -0.04516808, y: 0.6994396, z: -0.007448418, w: 0.71322405}
+  m_LocalPosition: {x: 0.026, y: -0.198, z: -0.012}
   m_LocalScale: {x: 0.9, y: 0.9, z: 0.9}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -1032,7 +1046,7 @@ Transform:
   - {fileID: 6707491718522898053}
   m_Father: {fileID: 7022971783318361044}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 92.820984, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 183.096, y: -91.004, z: -184.239}
 --- !u!114 &407627027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1046,6 +1060,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 3
+  hangType: 0
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -1353,12 +1368,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weapon:
     weaponType: 3
+    shootType: 0
+    defaultFireRate: 0
+    fireRate: 1
+    bulletsPerShot: 0
+    burstAvailable: 0
+    burstActive: 0
+    burstBulletsPerShoot: 0
+    burstFireRate: 0
+    bulletDelay: 0
     bulletsInMagazine: 0
     magazineCapacity: 0
     totalReserveAmmo: 0
     reloadSpeed: 1
     equipmentSpeed: 1
-    fireRate: 1
+    gunDistance: 4
+    cameraDistance: 6
+    baseSpread: 0
+    maxSpread: 0
+    spreadIncreaseRate: 0.15
 --- !u!4 &617065244
 Transform:
   m_ObjectHideFlags: 0
@@ -1497,7 +1525,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &763033273
 Transform:
   m_ObjectHideFlags: 0
@@ -1528,6 +1556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 2
+  hangType: 1
 --- !u!1 &812380289
 GameObject:
   m_ObjectHideFlags: 0
@@ -1575,6 +1604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 0
+  hangType: 2
 --- !u!1 &823694411
 GameObject:
   m_ObjectHideFlags: 0
@@ -1584,7 +1614,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 823694412}
-  - component: {fileID: 823694413}
   m_Layer: 8
   m_Name: LeftHand_TargetTransform
   m_TagString: Untagged
@@ -1607,18 +1636,6 @@ Transform:
   m_Father: {fileID: 1069192032}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &823694413
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 823694411}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54753be1bb49884e8d97931d00f671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1730,7 +1747,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 851335608}
-  - component: {fileID: 851335609}
   m_Layer: 8
   m_Name: LeftHand_TargetTransform
   m_TagString: Untagged
@@ -1753,18 +1769,6 @@ Transform:
   m_Father: {fileID: 849324124}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &851335609
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 851335607}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54753be1bb49884e8d97931d00f671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &861462209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1860,6 +1864,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 994566646}
+  - component: {fileID: 994566647}
   m_Layer: 0
   m_Name: CameraHolder
   m_TagString: Untagged
@@ -1884,6 +1889,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &994566647
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 994566645}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 361df0dc40f13f946873c876075cfd04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canChangeCameraDistance: 0
+  distanceChangeRate: 3
 --- !u!1 &1035710533
 GameObject:
   m_ObjectHideFlags: 0
@@ -2865,7 +2884,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1612058713}
-  - component: {fileID: 1612058714}
   m_Layer: 8
   m_Name: LeftHand_TargetTransform
   m_TagString: Untagged
@@ -2888,18 +2906,6 @@ Transform:
   m_Father: {fileID: 1369515291}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1612058714
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1612058712}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f54753be1bb49884e8d97931d00f671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1652429008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2948,6 +2954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponType: 4
+  hangType: 1
 --- !u!1 &1723519387
 GameObject:
   m_ObjectHideFlags: 0
@@ -3082,7 +3089,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64f602af4bcfb484f98fc6d680393884, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  poolSize: 50
+  poolSize: 5
   pfBullet: {fileID: 1017296509373725203, guid: 43a0a86d30e530843900a2fed1444510,
     type: 3}
 --- !u!4 &1872317076
