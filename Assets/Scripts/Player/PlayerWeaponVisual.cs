@@ -97,22 +97,47 @@ public class PlayerWeaponVisual : MonoBehaviour
     {
         foreach(BackupWeaponModel weapon in backupWeaponModels)
         {
-            weapon.gameObject.SetActive(false);
+            weapon.Activate(false);
         }
     }
 
     public void SwitchOnBackupWeaponModel()
     {
-        Weapon backupWeapon = player.playerWeapon.GetBackupWeapon();
-        if (backupWeapon == null) return;
+        SwitchOffBackupWeaponModels ();
 
-        foreach(BackupWeaponModel backupWeaponModal in backupWeaponModels)
+        BackupWeaponModel lowHangWeapon = null;
+        BackupWeaponModel backHangWeapon = null;
+        BackupWeaponModel sideHangWeapon = null;
+
+
+        foreach(BackupWeaponModel backupWeaponModel in backupWeaponModels)
         {
-            if(backupWeaponModal.WeaponType == backupWeapon.weaponType)
+            if(player.playerWeapon.CurrentWeapon().weaponType == backupWeaponModel.WeaponType)
             {
-                backupWeaponModal.gameObject.SetActive(true);
+                continue;
+            }
+
+
+            if (player.playerWeapon.WeaponInSlots(backupWeaponModel.WeaponType) != null)
+            {
+                if (backupWeaponModel.HangTypeIs(HangType.BackHang))
+                {
+                    backHangWeapon = backupWeaponModel;
+                }
+                if (backupWeaponModel.HangTypeIs(HangType.SideHang))
+                {
+                    sideHangWeapon = backupWeaponModel;
+                }
+                if (backupWeaponModel.HangTypeIs(HangType.LowBackHang))
+                {
+                    lowHangWeapon = backupWeaponModel;
+                }
             }
         }
+
+        lowHangWeapon?.Activate(true);
+        backHangWeapon?.Activate(true);
+        sideHangWeapon?.Activate(true);
     }
 
     public void PlayReloadAnimation()
