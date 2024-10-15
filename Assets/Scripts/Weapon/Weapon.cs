@@ -20,54 +20,78 @@ public enum ShootType
 [System.Serializable]
 public class Weapon
 {
+    #region Regular mode variables
     public WeaponType weaponType;
 
-    [Header("Shooting Specifics")]
     public ShootType shootType;
     public float defaultFireRate;
     public float fireRate = 1; // bullets per second
-    public int bulletsPerShot;
+    public int bulletsPerShot { get; private set; }
     private float lastShootTime;
+    #endregion
 
-    [Header("Burst")]
-    public bool burstAvailable;
+    #region Burst mode variables
+    private bool burstAvailable;
     public bool burstActive;
 
-    public int burstBulletsPerShoot;
-    public float burstFireRate;
-    public float bulletDelay;
+    private int burstBulletsPerShoot;
+    private float burstFireRate;
+    public float burstFireDelay { get; private set; }
+    #endregion
 
-    [Header("Magazine Retails")]
+    [Header("Magazine Details")]
     public int bulletsInMagazine;
     public int magazineCapacity;
     public int totalReserveAmmo;
 
-    [Range(1f, 3f)]
-    public float reloadSpeed = 1;
+    #region Generic Info
+    public float reloadSpeed { get; private set; }
 
-    [Range(1f, 3f)]
-    public float equipmentSpeed = 1;
+    public float equipmentSpeed { get; private set; }
 
-    [Range(1f, 12f)]
-    public float gunDistance = 4f;
+    public float gunDistance { get; private set; }
 
-    [Range(3f, 8f)]
-    public float cameraDistance = 6f;
+    public float cameraDistance { get; private set; }
+    #endregion
 
-    [Header("Spread")]
-    public float baseSpread;
+    #region Spread variables
+    private float baseSpread;
     private float currentSpread;
-    public float maxSpread;
+    private float maxSpread;
 
-    public float spreadIncreaseRate = .15f;
+    private float spreadIncreaseRate = .15f;
 
     private float lastSpreadUpdateTime;
     private float spreadCooldown = 1;
+    #endregion
 
-    public Weapon(WeaponType weaponType)
+    public Weapon(Weapon_Data weaponData)
     {
+        this.weaponType = weaponData.weaponType;
+        this.shootType = weaponData.shootType;
+        this.bulletsPerShot = weaponData.bulletsPerShot;
+        this.fireRate = weaponData.fireRate;
+
+        this.burstActive = weaponData.burstActive;
+        this.burstAvailable = weaponData.burstAvailable;
+        this.burstFireRate = weaponData.burstFireRate;
+        this.burstBulletsPerShoot = weaponData.burstBulletsPerShoot;
+        this.burstFireDelay = weaponData.burstFireDelay;
+
+        this.bulletsInMagazine = weaponData.bulletsInMagazine;
+        this.magazineCapacity = weaponData.magazineCapacity;
+        this.totalReserveAmmo = weaponData.totalReserveAmmo;
+
+        this.baseSpread = weaponData.baseSpread;
+        this.maxSpread = weaponData.maxSpread;
+        this.spreadIncreaseRate = weaponData.spreadIncreaseRate;
+
+        this.reloadSpeed = weaponData.reloadSpeed;
+        this.equipmentSpeed = weaponData.equipmentSpeed;
+        this.gunDistance = weaponData.gunDistance;
+        this.cameraDistance = weaponData.cameraDistance;
+
         defaultFireRate = fireRate;
-        this.weaponType = weaponType;
     }
 
     #region Burst
@@ -76,7 +100,7 @@ public class Weapon
     {
         if(weaponType == WeaponType.Shotgun)
         {
-            burstFireRate = 0;
+            burstFireDelay = 0;
             return true;
         }
 

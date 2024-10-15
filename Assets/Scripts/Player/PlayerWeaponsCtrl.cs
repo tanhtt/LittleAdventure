@@ -9,6 +9,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
     private Player player;
 
     [SerializeField] private Weapon currentWeapon;
+    [SerializeField] private Weapon_Data defaultWeaponData;
     private bool weaponReady;
     private bool isShooting = false;
 
@@ -30,7 +31,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
 
         currentWeapon.bulletsInMagazine = currentWeapon.totalReserveAmmo;
 
-        Invoke("EquipAtStart", .1f);
+        Invoke("EquipsStartingWeapon", .1f);
     }
 
     private void Update()
@@ -42,8 +43,9 @@ public class PlayerWeaponsCtrl : MonoBehaviour
     }
 
     #region Equip, Drop, Pickup, Ready weapon
-    private void EquipAtStart()
+    private void EquipsStartingWeapon()
     {
+        weaponSlots[0] = new Weapon(defaultWeaponData);
         EquipWeapon(0);
     }
 
@@ -68,11 +70,12 @@ public class PlayerWeaponsCtrl : MonoBehaviour
         EquipWeapon(0);
     }
 
-    public void PickupWeapon(Weapon weapon)
+    public void PickupWeapon(Weapon_Data weaponData)
     {
         if (weaponSlots.Count >= maxSlot) return;
 
-        weaponSlots.Add(weapon);
+        Weapon newWeapon = new Weapon(weaponData);
+        weaponSlots.Add(newWeapon);
         player.playerWeaponVisual.SwitchOnBackupWeaponModel();
     }
 
@@ -89,7 +92,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
         {
             FireSingleBullet();
 
-            yield return new WaitForSeconds(currentWeapon.bulletDelay);
+            yield return new WaitForSeconds(currentWeapon.burstFireDelay);
 
             if(i >= currentWeapon.bulletsPerShot) SetWeaponReady(true);
         }
