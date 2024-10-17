@@ -65,6 +65,8 @@ public class Weapon
     private float spreadCooldown = 1;
     #endregion
 
+    public Weapon_Data weaponData; // Serve as weapon data
+
     public Weapon(Weapon_Data weaponData)
     {
         this.weaponType = weaponData.weaponType;
@@ -92,6 +94,8 @@ public class Weapon
         this.cameraDistance = weaponData.cameraDistance;
 
         defaultFireRate = fireRate;
+
+        this.weaponData = weaponData;
     }
 
     #region Burst
