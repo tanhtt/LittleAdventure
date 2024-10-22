@@ -15,7 +15,7 @@ public class AttackData
 }
 
 public enum AttackType_Melee { Close, Charge }
-public enum EnemyMelee_Type { Regular, Shield, Dodge }
+public enum EnemyMelee_Type { Regular, Shield, Dodge, AxeThrow }
 
 public class EnemyMelee : Enemy
 {
@@ -25,6 +25,7 @@ public class EnemyMelee : Enemy
     public EMChase chaseState { get; private set; }
     public EMAttack attackState { get; private set; }
     public EMDead deadState { get; private set; }
+    public EMAbility abilityState { get; private set; }
 
     [SerializeField] private Transform hiddenWeapon;
     [SerializeField] private Transform pulledWeapon;
@@ -39,7 +40,15 @@ public class EnemyMelee : Enemy
 
     [Header("Dodge Data")]
     [SerializeField] private float dodgeCooldown;
-    private float lastTimeDodge;
+    private float lastTimeDodge = -10;
+
+    [Header("Axe throw ability")]
+    public GameObject axePrefab;
+    public float axeFlySpeed;
+    public float axeAimTimer;
+    public float axeThrowCooldown;
+    private float lastTimeThrown;
+    public Transform axeStartPoint;
 
     protected override void Awake()
     {
@@ -51,6 +60,7 @@ public class EnemyMelee : Enemy
         chaseState = new EMChase(this, stateMachine, "Chase");
         attackState = new EMAttack(this, stateMachine, "Attack");
         deadState = new EMDead(this, stateMachine, "Idle"); // use ragdoll instead of idle
+        abilityState = new EMAbility(this, stateMachine, "AxeThrow");
     }
 
     protected override void Start()
@@ -60,8 +70,6 @@ public class EnemyMelee : Enemy
         stateMachine.Initialize(idleState);
 
         InitializeSpeciality();
-
-        lastTimeDodge = Time.time;
     }
 
     protected override void Update()
@@ -104,11 +112,24 @@ public class EnemyMelee : Enemy
 
         if (Vector3.Distance(player.transform.position, transform.position) < 2f) return;
 
-        if (Time.time > dodgeCooldown + lastTimeDodge)
+        float dodgeAnimationDuration = GetAnimationClipDuration("DodgeRoll");
+        if (Time.time > dodgeCooldown + dodgeAnimationDuration + lastTimeDodge)
         {
             lastTimeDodge = Time.time;
             anim.SetTrigger("DodgeRoll");
         }
+    }
+
+    public bool CanThrowAxe()
+    {
+        if(meleeType != EnemyMelee_Type.AxeThrow) return false;
+
+        if(Time.time > axeThrowCooldown + lastTimeThrown)
+        {
+            lastTimeThrown = Time.time;
+            return true;
+        }
+        return false;
     }
 
     public bool IsPlayerInAttackRange() => (Vector3.Distance(player.position, transform.position) < attackData.attackRange);
@@ -117,5 +138,25 @@ public class EnemyMelee : Enemy
     {
         this.hiddenWeapon.gameObject.SetActive(false);
         this.pulledWeapon.gameObject.SetActive(true);
+    }
+
+    public override void AbilityTrigger()
+    {
+        base.AbilityTrigger();
+        moveSpeed = moveSpeed * .6f;
+        pulledWeapon.gameObject.SetActive(false);
+    }
+
+    private float GetAnimationClipDuration(string animationName)
+    {
+        AnimationClip[] animClips = anim.runtimeAnimatorController.animationClips;
+        foreach(AnimationClip animClip in animClips)
+        {
+            if(animClip.name == animationName)
+            {
+                return animClip.length;
+            }
+        }
+        return 0;
     }
 }

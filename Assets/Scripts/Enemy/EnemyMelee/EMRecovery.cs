@@ -30,7 +30,11 @@ public class EMRecovery : EnemyState
 
         if(triggerCalled)
         {
-            if (enemy.IsPlayerInAttackRange())
+            if(enemy.CanThrowAxe())
+            {
+                enemyStateMachine.TransitionTo(enemy.abilityState);
+            } 
+            else if (enemy.IsPlayerInAttackRange())
             {
                 enemyStateMachine.TransitionTo(enemy.attackState);
             }
