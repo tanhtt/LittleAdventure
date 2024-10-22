@@ -14,6 +14,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
     private bool isShooting = false;
 
     [Header("Bullet Info")]
+    [SerializeField] private float bulletImpactForce = 100;
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float bulletSpeed;
 
@@ -143,6 +144,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
         }
 
         FireSingleBullet();
+        CanEnemyDodge();
     }
 
     private void FireSingleBullet()
@@ -154,7 +156,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
         newBullet.transform.position = GunPoint().position;
         newBullet.transform.rotation = Quaternion.LookRotation(GunPoint().forward);
 
-        newBullet.GetComponent<Bullet>().BulletSetup(currentWeapon.gunDistance);
+        newBullet.GetComponent<Bullet>().BulletSetup(currentWeapon.gunDistance, bulletImpactForce);
 
         Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
         Vector3 bulletDirection = currentWeapon.ApplySpread(BulletDirection());
@@ -200,6 +202,7 @@ public class PlayerWeaponsCtrl : MonoBehaviour
     {
         return weaponSlots.Count <= 1;
     }
+
     public Weapon WeaponInSlots(WeaponType weaponType)
     {
         foreach(Weapon weapon in weaponSlots)
@@ -210,6 +213,21 @@ public class PlayerWeaponsCtrl : MonoBehaviour
             }
         }
         return null;
+    }
+
+    private void CanEnemyDodge()
+    {
+        Vector3 rayOrigin = GunPoint().position;
+        Vector3 rayDir = BulletDirection();
+        if(Physics.Raycast(rayOrigin, rayDir, out RaycastHit hit, Mathf.Infinity))
+        {
+            EnemyMelee enemyMelee = hit.collider.gameObject.GetComponentInParent<EnemyMelee>();
+            if(enemyMelee != null)
+            {
+                enemyMelee.ActiveDodgeRoll();
+                Debug.Log("Dodge roll");
+            }
+        }
     }
 
     #region Assign Input

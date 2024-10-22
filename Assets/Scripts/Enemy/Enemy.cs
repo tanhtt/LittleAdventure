@@ -5,20 +5,19 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] protected int healthPoints = 5;
+
     public EnemyStateMachine stateMachine { get; private set; }
     public NavMeshAgent agent { get; private set; }
     public Animator anim {  get; private set; }
     public Transform player {  get; private set; }
 
-    [Header("Attack Data")]
-    [SerializeField] private float aggresionRange;
-    [SerializeField] private float attackRange;
-    [SerializeField] public float attackMoveSpeed;
-
     private bool manualMovement;
+    private bool manualRotation;
 
     [Header("Idle Info")]
     public float idleTime;
+    [SerializeField] private float aggresionRange;
 
     [Header("Move Data")]
     [SerializeField] public float moveSpeed;
@@ -47,20 +46,37 @@ public class Enemy : MonoBehaviour
 
     }
 
-    private void OnDrawGizmos()
+    protected virtual void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, aggresionRange);
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
 
     public void ActiveManualMovement(bool active) => this.manualMovement = active;
     public bool GetManualMovementActive() => this.manualMovement;
 
+    public void ActiveManualRotation(bool active) => this.manualRotation = active;
+    public bool GetManualRotationActive() => this.manualRotation;
+
     public void AnimationTrigger() => stateMachine.currentState.AnimationTrigger();
 
+    public virtual void GetHit()
+    {
+        healthPoints--;
+    }
+
+    public virtual void HitImpact(Vector3 force, Vector3 hitPoint, Rigidbody rb)
+    {
+        StartCoroutine(HitImpactCoroutine(force, hitPoint, rb));
+    }
+
+    private IEnumerator HitImpactCoroutine(Vector3 force, Vector3 hitPoint, Rigidbody rb)
+    {
+        yield return new WaitForSeconds(.1f);
+
+        rb.AddForceAtPosition(force, hitPoint, ForceMode.Impulse);
+    }
+
     public bool IsPlayerInAggresionRange() => (Vector3.Distance(player.position, transform.position) < aggresionRange);
-    public bool IsPlayerInAttackRange() => (Vector3.Distance(player.position, transform.position) < attackRange);
 
     public Vector3 GetPatrolDestination()
     {

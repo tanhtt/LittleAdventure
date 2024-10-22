@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    public float impactForce;
+
     [SerializeField] private GameObject bulletImpactFXPrefab;
     private Rigidbody rb;
     private SphereCollider col;
@@ -56,8 +59,9 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    public void BulletSetup(float flyDistance)
+    public void BulletSetup(float flyDistance, float impactForce)
     {
+        this.impactForce = impactForce;
         bulletDisabled = false;
         meshRenderer.enabled = true;
         col.enabled = true;
@@ -70,8 +74,24 @@ public class Bullet : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         CreateImpactFX(collision);
-
         ObjectPool.instance.ReturnObject(this.gameObject);
+
+        Enemy enemy = collision.gameObject.GetComponentInParent<Enemy>();
+        EnemyShield enemyShield = collision.gameObject.GetComponent<EnemyShield>();
+
+        if(enemyShield != null)
+        {
+            enemyShield.ReduceDurability();
+            return;
+        }
+
+        if (enemy != null)
+        {
+            Vector3 force = rb.velocity.normalized * impactForce;
+            Rigidbody hitRb = collision.collider.attachedRigidbody;
+            enemy.GetHit();
+            enemy.HitImpact(force, collision.contacts[0].point, hitRb);
+        }
     }
 
     private void CreateImpactFX(Collision collision)
