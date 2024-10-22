@@ -36,6 +36,10 @@ public class EnemyState
 
     public void AnimationTrigger() => triggerCalled = true;
 
+    public virtual void AbilityTrigger()
+    {
+
+    }
 
     public Vector3 GetNextPathPoint()
     {

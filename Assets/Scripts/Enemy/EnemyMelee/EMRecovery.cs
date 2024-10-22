@@ -30,15 +30,18 @@ public class EMRecovery : EnemyState
 
         if(triggerCalled)
         {
-            enemyStateMachine.TransitionTo(enemy.abilityState);
-            //if (enemy.IsPlayerInAttackRange())
-            //{
-            //    enemyStateMachine.TransitionTo(enemy.attackState);
-            //}
-            //else
-            //{
-            //    enemyStateMachine.TransitionTo(enemy.chaseState);
-            //}
+            if(enemy.CanThrowAxe())
+            {
+                enemyStateMachine.TransitionTo(enemy.abilityState);
+            } 
+            else if (enemy.IsPlayerInAttackRange())
+            {
+                enemyStateMachine.TransitionTo(enemy.attackState);
+            }
+            else
+            {
+                enemyStateMachine.TransitionTo(enemy.chaseState);
+            }
         }
     }
 }

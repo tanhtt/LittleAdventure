@@ -8,6 +8,7 @@ public class EMAbility : EnemyState
     private Vector3 direction;
     private const float MAX_ATTACK_DISTANCE = 50;
     private float moveSpeed;
+    private float lastTimeAxeThrown;
 
     public EMAbility(Enemy enemy, EnemyStateMachine enemyStateMachine, string animBoolName) : base(enemy, enemyStateMachine, animBoolName)
     {
@@ -17,6 +18,8 @@ public class EMAbility : EnemyState
     public override void Enter()
     {
         base.Enter();
+        enemy.PullWeapon();
+
         moveSpeed = enemy.moveSpeed;
         direction = enemy.transform.position + (enemy.transform.forward * MAX_ATTACK_DISTANCE);
     }
@@ -48,5 +51,14 @@ public class EMAbility : EnemyState
         {
             enemyStateMachine.TransitionTo(enemy.recoveryState);
         }
+    }
+
+    public override void AbilityTrigger()
+    {
+        base.AbilityTrigger();
+        GameObject newAxe = ObjectPool.instance.GetObject(enemy.axePrefab);
+
+        newAxe.transform.position = enemy.axeStartPoint.position;
+        newAxe.GetComponent<EnemyAxe>().SetUpAxe(enemy.player, enemy.axeFlySpeed, enemy.axeAimTimer);
     }
 }

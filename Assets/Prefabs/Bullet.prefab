@@ -29,13 +29,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1017296509373725203}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.16566701, y: 1.3345279, z: 0.725}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2001488418299228629
 MeshFilter:
@@ -126,11 +126,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5802e83a3f2721f48a6eaadbcf512158, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  impactForce: 0
   bulletImpactFXPrefab: {fileID: 8339293583975215508, guid: 0625dca494523a64c9fba1835a03cae7,
     type: 3}
-  col: {fileID: 5088810946143095153}
-  meshRenderer: {fileID: 2576615165991655364}
-  trailRenderer: {fileID: 2969117205989650426}
 --- !u!96 &2969117205989650426
 TrailRenderer:
   serializedVersion: 3
