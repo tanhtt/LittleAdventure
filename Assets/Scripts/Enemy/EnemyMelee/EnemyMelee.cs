@@ -25,6 +25,7 @@ public class EnemyMelee : Enemy
     public EMChase chaseState { get; private set; }
     public EMAttack attackState { get; private set; }
     public EMDead deadState { get; private set; }
+    public EMAbility abilityState { get; private set; }
 
     [SerializeField] private Transform hiddenWeapon;
     [SerializeField] private Transform pulledWeapon;
@@ -51,6 +52,7 @@ public class EnemyMelee : Enemy
         chaseState = new EMChase(this, stateMachine, "Chase");
         attackState = new EMAttack(this, stateMachine, "Attack");
         deadState = new EMDead(this, stateMachine, "Idle"); // use ragdoll instead of idle
+        abilityState = new EMAbility(this, stateMachine, "AxeThrow");
     }
 
     protected override void Start()
@@ -117,5 +119,12 @@ public class EnemyMelee : Enemy
     {
         this.hiddenWeapon.gameObject.SetActive(false);
         this.pulledWeapon.gameObject.SetActive(true);
+    }
+
+    public void TriggerAbility()
+    {
+        moveSpeed = moveSpeed * .6f;
+        Debug.Log("Throw axe");
+        pulledWeapon.gameObject.SetActive(false);
     }
 }

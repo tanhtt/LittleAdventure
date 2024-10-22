@@ -225,7 +225,6 @@ public class PlayerWeaponsCtrl : MonoBehaviour
             if(enemyMelee != null)
             {
                 enemyMelee.ActiveDodgeRoll();
-                Debug.Log("Dodge roll");
             }
         }
     }
