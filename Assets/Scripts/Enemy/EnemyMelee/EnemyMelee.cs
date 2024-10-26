@@ -19,6 +19,7 @@ public enum EnemyMelee_Type { Regular, Shield, Dodge, AxeThrow }
 
 public class EnemyMelee : Enemy
 {
+    #region States
     public EMIdle idleState {  get; private set; }
     public EMMove moveState { get; private set; }
     public EMRecovery recoveryState { get; private set; }
@@ -26,6 +27,7 @@ public class EnemyMelee : Enemy
     public EMAttack attackState { get; private set; }
     public EMDead deadState { get; private set; }
     public EMAbility abilityState { get; private set; }
+    #endregion
 
     [SerializeField] private Transform hiddenWeapon;
     [SerializeField] private Transform pulledWeapon;
@@ -75,8 +77,20 @@ public class EnemyMelee : Enemy
     protected override void Update()
     {
         base.Update();
-
         stateMachine.currentState.Update();
+
+        if(ShouldEnterBattleMode())
+        {
+            EnterBattleMode();
+        }
+    }
+
+    public override void EnterBattleMode()
+    {
+        if (inBattleMode) return;
+
+        base.EnterBattleMode();
+        stateMachine.TransitionTo(recoveryState);
     }
 
     private void InitializeSpeciality()

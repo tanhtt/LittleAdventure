@@ -26,7 +26,7 @@ public class EMRecovery : EnemyState
     {
         base.Update();
 
-        enemy.transform.rotation = enemy.FaceTarget(enemy.player.transform.position);
+        enemy.FaceTarget(enemy.player.transform.position);
 
         if(triggerCalled)
         {

@@ -31,13 +31,7 @@ public class EMMove : EnemyState
     {
         base.Update();
 
-        if (enemy.IsPlayerInAggresionRange())
-        {
-            enemyStateMachine.TransitionTo(enemy.recoveryState);
-            return;
-        }
-
-        enemy.transform.rotation = enemy.FaceTarget(GetNextPathPoint());
+        enemy.FaceTarget(GetNextPathPoint());
 
         if(enemy.agent.remainingDistance <= enemy.agent.stoppingDistance + .05f)
         {

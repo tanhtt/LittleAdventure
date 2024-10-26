@@ -51,7 +51,7 @@ public class EMAttack : EnemyState
 
         if (enemy.GetManualRotationActive())
         {
-            enemy.transform.rotation = enemy.FaceTarget(enemy.player.transform.position);
+            enemy.FaceTarget(enemy.player.transform.position);
             attackDirection = enemy.transform.position + (enemy.transform.forward * MAX_ATTACK_DISTANCE);
         }
 

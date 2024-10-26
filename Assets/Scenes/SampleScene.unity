@@ -1934,7 +1934,7 @@ MonoBehaviour:
   - {fileID: 1940259160}
   hiddenWeapon: {fileID: 94347680}
   pulledWeapon: {fileID: 7646793677786419288}
-  meleeType: 2
+  meleeType: 3
   shieldTransform: {fileID: 6732699917583650187}
   attackData:
     attackName: 
