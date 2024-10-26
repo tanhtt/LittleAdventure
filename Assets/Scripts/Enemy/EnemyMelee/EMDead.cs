@@ -37,8 +37,12 @@ public class EMDead : EnemyState
     public override void Update()
     {
         base.Update();
+        DisableInteraction();
+    }
 
-        if(stateTimer < 0 && interactionDisabled == false)
+    private void DisableInteraction()
+    {
+        if (stateTimer < 0 && interactionDisabled == false)
         {
             interactionDisabled = true;
             ragdoll.RagdollActive(false);

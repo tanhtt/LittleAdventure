@@ -26,12 +26,6 @@ public class EMIdle : EnemyState
     {
         base.Update();
 
-        if (enemy.IsPlayerInAggresionRange())
-        {
-            enemyStateMachine.TransitionTo(enemy.recoveryState);
-            return;
-        }
-
         if (stateTimer < 0)
         {
             enemyStateMachine.TransitionTo(enemy.moveState);
