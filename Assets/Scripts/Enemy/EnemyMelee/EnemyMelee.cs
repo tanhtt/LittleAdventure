@@ -29,12 +29,10 @@ public class EnemyMelee : Enemy
     public EMAbility abilityState { get; private set; }
     #endregion
 
-    [SerializeField] private Transform hiddenWeapon;
-    [SerializeField] private Transform pulledWeapon;
-
     [Header("Enemy Settings")]
     public EnemyMelee_Type meleeType;
     [SerializeField] private Transform shieldTransform;
+    private EnemyVisual enemyVisual;
 
     [Header("Attack Data")]
     public AttackData attackData;
@@ -63,6 +61,8 @@ public class EnemyMelee : Enemy
         attackState = new EMAttack(this, stateMachine, "Attack");
         deadState = new EMDead(this, stateMachine, "Idle"); // use ragdoll instead of idle
         abilityState = new EMAbility(this, stateMachine, "AxeThrow");
+
+        enemyVisual = GetComponent<EnemyVisual>();
     }
 
     protected override void Start()
@@ -72,6 +72,7 @@ public class EnemyMelee : Enemy
         stateMachine.Initialize(idleState);
 
         InitializeSpeciality();
+        enemyVisual.SetupLook();
     }
 
     protected override void Update()
@@ -95,10 +96,16 @@ public class EnemyMelee : Enemy
 
     private void InitializeSpeciality()
     {
+        if(meleeType == EnemyMelee_Type.AxeThrow)
+        {
+            enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.Throw);
+        }
+
         if(meleeType == EnemyMelee_Type.Shield)
         {
             anim.SetFloat("ChaseIndex", 1);
             shieldTransform.gameObject.SetActive(true);
+            enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.OneHand);
         }
     }
 
@@ -148,17 +155,16 @@ public class EnemyMelee : Enemy
 
     public bool IsPlayerInAttackRange() => (Vector3.Distance(player.position, transform.position) < attackData.attackRange);
 
-    public void PullWeapon()
+    public void EnableWeaponModel(bool active)
     {
-        this.hiddenWeapon.gameObject.SetActive(false);
-        this.pulledWeapon.gameObject.SetActive(true);
+        enemyVisual.currentWeaponModel.gameObject.SetActive(active);
     }
 
     public override void AbilityTrigger()
     {
         base.AbilityTrigger();
         moveSpeed = moveSpeed * .6f;
-        pulledWeapon.gameObject.SetActive(false);
+        EnableWeaponModel(false);
     }
 
     private float GetAnimationClipDuration(string animationName)

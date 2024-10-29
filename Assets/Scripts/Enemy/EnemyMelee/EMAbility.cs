@@ -18,7 +18,7 @@ public class EMAbility : EnemyState
     public override void Enter()
     {
         base.Enter();
-        enemy.PullWeapon();
+        enemy.EnableWeaponModel(true);
 
         moveSpeed = enemy.moveSpeed;
         direction = enemy.transform.position + (enemy.transform.forward * MAX_ATTACK_DISTANCE);
