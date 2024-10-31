@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class AttackData
+public class Enemy_MeleeAttackData
 {
     public string attackName;
     public float attackRange;
@@ -32,11 +32,11 @@ public class EnemyMelee : Enemy
     [Header("Enemy Settings")]
     public EnemyMelee_Type meleeType;
     [SerializeField] private Transform shieldTransform;
-    private EnemyVisual enemyVisual;
+    public EnemyVisual enemyVisual { get; private set; }
 
     [Header("Attack Data")]
-    public AttackData attackData;
-    public List<AttackData> attackList;
+    public Enemy_MeleeAttackData attackData;
+    public List<Enemy_MeleeAttackData> attackList;
 
     [Header("Dodge Data")]
     [SerializeField] private float dodgeCooldown;
@@ -73,6 +73,7 @@ public class EnemyMelee : Enemy
 
         InitializeSpeciality();
         enemyVisual.SetupLook();
+        UpdateAttackData();
     }
 
     protected override void Update()
@@ -107,13 +108,11 @@ public class EnemyMelee : Enemy
             shieldTransform.gameObject.SetActive(true);
             enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.OneHand);
         }
-    }
 
-    protected override void OnDrawGizmos()
-    {
-        base.OnDrawGizmos();
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, attackData.attackRange);
+        if (meleeType == EnemyMelee_Type.Dodge)
+        {
+            enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.Unarmed);
+        }
     }
 
     public override void GetHit()
@@ -167,6 +166,17 @@ public class EnemyMelee : Enemy
         EnableWeaponModel(false);
     }
 
+    public void UpdateAttackData()
+    {
+        EnemyWeaponModel currentWeapon = enemyVisual.currentWeaponModel.GetComponent<EnemyWeaponModel>();
+
+        if (currentWeapon.weaponData != null)
+        {
+            this.attackList = new List<Enemy_MeleeAttackData>(currentWeapon.weaponData.attackList);
+            turnSpeed = currentWeapon.weaponData.turnSpeed;
+        }
+    }
+
     private float GetAnimationClipDuration(string animationName)
     {
         AnimationClip[] animClips = anim.runtimeAnimatorController.animationClips;
@@ -178,5 +188,12 @@ public class EnemyMelee : Enemy
             }
         }
         return 0;
+    }
+
+    protected override void OnDrawGizmos()
+    {
+        base.OnDrawGizmos();
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, attackData.attackRange);
     }
 }
