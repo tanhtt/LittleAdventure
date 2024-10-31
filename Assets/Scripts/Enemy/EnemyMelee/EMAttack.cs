@@ -18,7 +18,9 @@ public class EMAttack : EnemyState
     public override void Enter()
     {
         base.Enter();
+        enemy.UpdateAttackData();
         enemy.EnableWeaponModel(true);
+        enemy.enemyVisual.EnableTrailEffect(true);
 
         attackMoveSpeed = enemy.attackData.moveSpeed;
         enemy.anim.SetFloat("AttackAnimSpeed", enemy.attackData.animationSpeed);
@@ -36,6 +38,7 @@ public class EMAttack : EnemyState
     {
         base.Exit();
         SetupNextAttack();
+        enemy.enemyVisual.EnableTrailEffect(false);
     }
 
     private void SetupNextAttack()
@@ -75,9 +78,9 @@ public class EMAttack : EnemyState
 
     private bool IsPlayerClose() => Vector3.Distance(enemy.transform.position, enemy.player.transform.position) <= 1f;
 
-    private AttackData GetRandomAttackType()
+    private Enemy_MeleeAttackData GetRandomAttackType()
     {
-        List<AttackData> attackList = new List<AttackData>(enemy.attackList);
+        List<Enemy_MeleeAttackData> attackList = new List<Enemy_MeleeAttackData>(enemy.attackList);
 
         if (IsPlayerClose())
         {

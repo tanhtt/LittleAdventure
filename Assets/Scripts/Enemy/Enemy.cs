@@ -25,7 +25,7 @@ public class Enemy : MonoBehaviour
     private bool manualRotation;
 
     [Space]
-    [SerializeField] private float turnSpeed;
+    [SerializeField] protected float turnSpeed;
 
     [Header("Patrol Points Data")]
     [SerializeField] private Transform[] patrolDestinations;

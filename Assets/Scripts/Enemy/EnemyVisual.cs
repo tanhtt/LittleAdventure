@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Enemy_MeleeWeaponType { OneHand, Throw }
+public enum Enemy_MeleeWeaponType { OneHand, Throw, Unarmed }
 
 public class EnemyVisual : MonoBehaviour
 {
@@ -30,6 +30,12 @@ public class EnemyVisual : MonoBehaviour
         CollectCorruptionCrystals();
 
         InvokeRepeating(nameof(SetupLook), 1, 1.5f);
+    }
+
+    public void EnableTrailEffect(bool active)
+    {
+        EnemyWeaponModel enemyWeaponModel =  currentWeaponModel.GetComponent<EnemyWeaponModel>();
+        enemyWeaponModel.EnableTrailEffect(active);
     }
 
     public void SetupLook()
@@ -69,16 +75,16 @@ public class EnemyVisual : MonoBehaviour
 
     private void SetupRandomWeapon()
     {
-        foreach(EnemyWeaponModel model in enemyWeaponModels)
+        foreach (EnemyWeaponModel model in enemyWeaponModels)
         {
             model.gameObject.SetActive(false);
         }
 
         List<EnemyWeaponModel> filteredWeaponModels = new List<EnemyWeaponModel>();
 
-        foreach(var weaponModel in enemyWeaponModels)
+        foreach (var weaponModel in enemyWeaponModels)
         {
-            if(weaponModel.weaponType == weaponType)
+            if (weaponModel.weaponType == weaponType)
             {
                 filteredWeaponModels.Add(weaponModel);
             }
@@ -86,8 +92,20 @@ public class EnemyVisual : MonoBehaviour
 
         int randomIndex = Random.Range(0, filteredWeaponModels.Count);
 
-        currentWeaponModel = filteredWeaponModels[randomIndex].gameObject; 
+        currentWeaponModel = filteredWeaponModels[randomIndex].gameObject;
         currentWeaponModel.SetActive(true);
+
+        OverrideAnimatorControllerIfCan();
+    }
+
+    private void OverrideAnimatorControllerIfCan()
+    {
+        AnimatorOverrideController animatorOverrideController = currentWeaponModel.GetComponent<EnemyWeaponModel>().overrideController;
+
+        if (animatorOverrideController != null)
+        {
+            GetComponentInChildren<Animator>().runtimeAnimatorController = animatorOverrideController;
+        }
     }
 
     private void SetupRandomTexture()
