@@ -31,8 +31,8 @@ public class EnemyMelee : Enemy
 
     [Header("Enemy Settings")]
     public EnemyMelee_Type meleeType;
+    public Enemy_MeleeWeaponType weaponType;
     [SerializeField] private Transform shieldTransform;
-    public EnemyVisual enemyVisual { get; private set; }
 
     [Header("Attack Data")]
     public Enemy_MeleeAttackData attackData;
@@ -62,7 +62,6 @@ public class EnemyMelee : Enemy
         deadState = new EMDead(this, stateMachine, "Idle"); // use ragdoll instead of idle
         abilityState = new EMAbility(this, stateMachine, "AxeThrow");
 
-        enemyVisual = GetComponent<EnemyVisual>();
     }
 
     protected override void Start()
@@ -80,11 +79,6 @@ public class EnemyMelee : Enemy
     {
         base.Update();
         stateMachine.currentState.Update();
-
-        if(ShouldEnterBattleMode())
-        {
-            EnterBattleMode();
-        }
     }
 
     public override void EnterBattleMode()
@@ -99,19 +93,19 @@ public class EnemyMelee : Enemy
     {
         if(meleeType == EnemyMelee_Type.AxeThrow)
         {
-            enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.Throw);
+            weaponType = Enemy_MeleeWeaponType.Throw;
         }
 
         if(meleeType == EnemyMelee_Type.Shield)
         {
             anim.SetFloat("ChaseIndex", 1);
             shieldTransform.gameObject.SetActive(true);
-            enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.OneHand);
+            weaponType = Enemy_MeleeWeaponType.OneHand;
         }
 
         if (meleeType == EnemyMelee_Type.Dodge)
         {
-            enemyVisual.SetupWeaponType(Enemy_MeleeWeaponType.Unarmed);
+            weaponType = Enemy_MeleeWeaponType.Unarmed;
         }
     }
 
@@ -162,7 +156,7 @@ public class EnemyMelee : Enemy
     public override void AbilityTrigger()
     {
         base.AbilityTrigger();
-        moveSpeed = moveSpeed * .6f;
+        walkSpeed = walkSpeed * .6f;
         EnableWeaponModel(false);
     }
 

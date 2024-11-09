@@ -20,14 +20,14 @@ public class EMAbility : EnemyState
         base.Enter();
         enemy.EnableWeaponModel(true);
 
-        moveSpeed = enemy.moveSpeed;
+        moveSpeed = enemy.walkSpeed;
         direction = enemy.transform.position + (enemy.transform.forward * MAX_ATTACK_DISTANCE);
     }
 
     public override void Exit()
     {
         base.Exit();
-        enemy.moveSpeed = moveSpeed;
+        enemy.walkSpeed = moveSpeed;
         enemy.anim.SetFloat("RecoveryIndex", 0);
     }
 
@@ -44,7 +44,7 @@ public class EMAbility : EnemyState
 
         if (enemy.GetManualMovementActive())
         {
-            enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, direction, enemy.moveSpeed * Time.deltaTime);
+            enemy.transform.position = Vector3.MoveTowards(enemy.transform.position, direction, enemy.walkSpeed * Time.deltaTime);
         }
 
         if (triggerCalled)

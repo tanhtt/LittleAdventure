@@ -16,7 +16,7 @@ public class EMChase : EnemyState
     {
         base.Enter();
         enemy.agent.isStopped = false;
-        enemy.agent.speed = enemy.chaseSpeed;
+        enemy.agent.speed = enemy.runSpeed;
     }
 
     public override void Exit()

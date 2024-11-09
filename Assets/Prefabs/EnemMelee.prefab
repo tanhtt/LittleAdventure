@@ -1753,7 +1753,7 @@ GameObject:
   - component: {fileID: 5256183140719142024}
   - component: {fileID: 3118798193691575108}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: EnemMelee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1799,7 +1799,8 @@ MonoBehaviour:
   - {fileID: 5890525298493656916}
   - {fileID: 4510804324936904714}
   - {fileID: 6757414595779312599}
-  meleeType: 2
+  meleeType: 1
+  weaponType: 0
   shieldTransform: {fileID: 1075724266822451471}
   attackData:
     attackName: 
@@ -1878,7 +1879,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyWeaponModels: []
-  weaponType: 2
   corruptionCrystals: []
   corruptionAmount: 4
   textures:
