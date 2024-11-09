@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EMIdle : EnemyState
+public class ERange_IdleState : EnemyState
 {
-    private EnemyMelee enemyMelee;
+    private EnemyRange enemyRange;
 
-    public EMIdle(Enemy enemy, EnemyStateMachine enemyStateMachine, string animBoolName) : base(enemy, enemyStateMachine, animBoolName)
+    public ERange_IdleState(Enemy enemy, EnemyStateMachine enemyStateMachine, string animBoolName) : base(enemy, enemyStateMachine, animBoolName)
     {
-        this.enemyMelee = enemy as EnemyMelee;
+        this.enemyRange = enemy as EnemyRange;
     }
 
     public override void Enter()
@@ -28,7 +28,8 @@ public class EMIdle : EnemyState
 
         if (stateTimer < 0)
         {
-            enemyStateMachine.TransitionTo(enemyMelee.moveState);
+            enemyStateMachine.TransitionTo(enemyRange.moveState);
         }
+
     }
 }

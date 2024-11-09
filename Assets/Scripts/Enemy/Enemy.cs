@@ -11,6 +11,7 @@ public class Enemy : MonoBehaviour
     public NavMeshAgent agent { get; private set; }
     public Animator anim {  get; private set; }
     public Transform player {  get; private set; }
+    public EnemyVisual enemyVisual { get; private set; }
 
     protected bool inBattleMode = false;
 
@@ -19,8 +20,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float aggresionRange;
 
     [Header("Move Data")]
-    [SerializeField] public float moveSpeed;
-    [SerializeField] public float chaseSpeed;
+    [SerializeField] public float walkSpeed = 1.5f;
+    [SerializeField] public float runSpeed = 3f;
     private bool manualMovement;
     private bool manualRotation;
 
@@ -35,6 +36,9 @@ public class Enemy : MonoBehaviour
     protected virtual void Awake()
     {
         stateMachine = new EnemyStateMachine();
+        
+        enemyVisual = GetComponent<EnemyVisual>();
+
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponentInChildren<Animator>();
         player = GameObject.Find("Player").GetComponent<Transform>();
@@ -47,7 +51,10 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Update()
     {
-
+        if (ShouldEnterBattleMode())
+        {
+            EnterBattleMode();
+        }
     }
 
     protected bool ShouldEnterBattleMode()
