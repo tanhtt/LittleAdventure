@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using Unity.Burst.Intrinsics;
 using UnityEngine;
 
+public enum CoverPerk { Unavailable, CanTakeCover, CanTakeAndChangeCover}
 public class EnemyRange : Enemy
 {
+    [Header("Cover Perk")]
+    public CoverPerk coverPerk;
+
+    [Header("Advance Perk")]
+    public float advanceSpeed;
+    public float advanceStopDistance;
+
     [Header("Cover System")]
-    public bool canUseCovers = true;
+    public float safeDistance;
     public CoverPoint lastCover {  get; private set; }
     public CoverPoint currentCover { get; private set; }
 
@@ -30,6 +38,7 @@ public class EnemyRange : Enemy
     public ERange_MoveState moveState { get; private set; }
     public ERange_BattleState battleState { get; private set; }
     public ERange_RunToCoverState runToCoverState { get; private set; }
+    public ERange_AdvancePlayer advancePlayerState { get; private set; }
     #endregion
 
     protected override void Awake()
@@ -40,6 +49,7 @@ public class EnemyRange : Enemy
         moveState = new ERange_MoveState(this, stateMachine, "Move");
         battleState = new ERange_BattleState(this, stateMachine, "Battle");
         runToCoverState = new ERange_RunToCoverState(this, stateMachine, "Run");
+        advancePlayerState = new ERange_AdvancePlayer(this, stateMachine, "Advance");
     }
 
     protected override void Start()
@@ -137,7 +147,10 @@ public class EnemyRange : Enemy
 
     public bool CanGetCover()
     {
-        if (canUseCovers == false) return false;
+        if(coverPerk == CoverPerk.Unavailable)
+        {
+            return false;
+        }
 
         currentCover = AttempToFindCoverPoint()?.GetComponent<CoverPoint>();
 

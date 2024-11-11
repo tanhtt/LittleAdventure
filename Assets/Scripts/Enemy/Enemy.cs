@@ -59,10 +59,9 @@ public class Enemy : MonoBehaviour
 
     protected bool ShouldEnterBattleMode()
     {
-        bool isInAgressionRange = (Vector3.Distance(player.position, transform.position) < aggresionRange);
-        if(isInAgressionRange && !inBattleMode)
+        if(IsPlayerInRange() && !inBattleMode)
         {
-            EnterBattleMode();
+            //EnterBattleMode();
             return true;
         }
         return false;
@@ -83,6 +82,8 @@ public class Enemy : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(currentEulerAngles.x, yRotation, currentEulerAngles.z);
     }
+
+    public bool IsPlayerInRange() => (Vector3.Distance(player.position, transform.position) < aggresionRange);
 
     #region Animation Event
     public void ActiveManualMovement(bool active) => this.manualMovement = active;
