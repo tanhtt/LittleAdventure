@@ -13,7 +13,7 @@ public class EnemyBullet : Bullet
 
         if (player != null)
         {
-            Debug.Log("Shoot Player");
+            //Debug.Log("Shoot Player");
         }
     }
 }

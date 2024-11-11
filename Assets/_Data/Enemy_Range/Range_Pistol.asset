@@ -16,7 +16,7 @@ MonoBehaviour:
   fireRate: 1
   minBulletsPerAttack: 1
   maxBulletsPerAttack: 1
-  minWeaponCooldown: 100
-  maxWeaponCooldown: 100
+  minWeaponCooldown: 3
+  maxWeaponCooldown: 3
   bulletSpeed: 10
   weaponSpread: 0.1
