@@ -7,6 +7,8 @@ public class ERange_AdvancePlayer : EnemyState
     private EnemyRange enemyRange;
     private Vector3 playerPos;
 
+    public float lastTimeAdvanced { get; private set; }
+
     public ERange_AdvancePlayer(Enemy enemy, EnemyStateMachine enemyStateMachine, string animBoolName) : base(enemy, enemyStateMachine, animBoolName)
     {
         enemyRange = enemy as EnemyRange;
@@ -23,6 +25,7 @@ public class ERange_AdvancePlayer : EnemyState
     public override void Exit()
     {
         base.Exit();
+        this.lastTimeAdvanced = Time.time;
     }
 
     public override void Update()
@@ -31,13 +34,20 @@ public class ERange_AdvancePlayer : EnemyState
 
         playerPos = enemyRange.player.transform.position;
 
-        if(Vector3.Distance(playerPos, enemyRange.transform.position) <= enemyRange.advanceStopDistance)
+        enemyRange.agent.SetDestination(playerPos);
+        enemyRange.FaceTarget(GetNextPathPoint());
+
+        enemyRange.UpdateAimPosition();
+
+        if (CanEnterBattleMode())
         {
             enemyRange.stateMachine.TransitionTo(enemyRange.battleState);
         }
+    }
 
-        enemyRange.agent.SetDestination(playerPos);
-
-        enemyRange.FaceTarget(GetNextPathPoint());
+    private bool CanEnterBattleMode()
+    {
+        return Vector3.Distance(playerPos, enemyRange.transform.position) <= enemyRange.advanceStopDistance
+            && enemyRange.IsSeeingPlayer();
     }
 }

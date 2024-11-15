@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public Transform playerBody;
+
     public PlayerInputs playerInputs {  get; private set; }
     public PlayerAim playerAim { get; private set; }
     public PlayerMovement playerMovement { get; private set; }

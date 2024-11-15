@@ -37,14 +37,17 @@ public class ERange_BattleState : EnemyState
     {
         base.Update();
 
-        if (!enemyRange.IsPlayerInRange())
+        if(enemyRange.IsSeeingPlayer())
+        {
+            enemyRange.FaceTarget(enemyRange.aim.position);
+        }
+
+        if (!enemyRange.IsPlayerInRange() && IsReadyToLeaveCover())
         {
             enemyRange.stateMachine.TransitionTo(enemyRange.advancePlayerState);
         }
 
         ChangeCoverIfShould();
-
-        enemyRange.FaceTarget(enemyRange.player.transform.position);
 
         if (WeaponOutOfBullets())
         {
@@ -56,7 +59,7 @@ public class ERange_BattleState : EnemyState
         }
 
 
-        if (CanShoot())
+        if (CanShoot() && enemyRange.IsAimOnPlayer())
         {
             Shoot();
         }
@@ -74,7 +77,7 @@ public class ERange_BattleState : EnemyState
         {
             checkCoverTimer = .5f;
 
-            if (IsPlayerInClearSight() || IsPlayerClose())
+            if (ReadyToChangeCover())
             {
                 if (enemyRange.CanGetCover())
                 {
@@ -82,6 +85,15 @@ public class ERange_BattleState : EnemyState
                 }
             }
         }
+    }
+
+    private bool ReadyToChangeCover()
+    {
+        bool inDanger = IsPlayerInClearSight() || IsPlayerClose();
+
+        bool advancedIsOver = Time.time > enemyRange.advancePlayerState.lastTimeAdvanced + enemyRange.advancedTime;
+
+        return inDanger && advancedIsOver;
     }
 
     #region Cover System
@@ -100,6 +112,11 @@ public class ERange_BattleState : EnemyState
             return hit.collider.gameObject.GetComponentInParent<Player>();
         }
         return false;
+    }
+
+    public bool IsReadyToLeaveCover()
+    {
+        return Time.time > enemyRange.runToCoverState.lastTimeTookCover + enemyRange.minCoverTime;
     }
 
     #endregion

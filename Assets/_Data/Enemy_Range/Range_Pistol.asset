@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Range_Pistol
   m_EditorClassIdentifier: 
   weaponType: 0
-  fireRate: 1
+  fireRate: 5
   minBulletsPerAttack: 1
   maxBulletsPerAttack: 1
-  minWeaponCooldown: 3
-  maxWeaponCooldown: 3
+  minWeaponCooldown: 1
+  maxWeaponCooldown: 1
   bulletSpeed: 10
   weaponSpread: 0.1

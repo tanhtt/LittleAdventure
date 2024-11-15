@@ -12,8 +12,10 @@ public class EnemyRange : Enemy
     [Header("Advance Perk")]
     public float advanceSpeed;
     public float advanceStopDistance;
+    public float advancedTime;
 
     [Header("Cover System")]
+    public float minCoverTime = 2.5f;
     public float safeDistance;
     public CoverPoint lastCover {  get; private set; }
     public CoverPoint currentCover { get; private set; }
@@ -32,6 +34,13 @@ public class EnemyRange : Enemy
     [Header("Fire Info")]
     [SerializeField] private GameObject enemyBulletPrefab;
     [SerializeField] private Transform gunPoint;
+
+    [Header("Aim Details")]
+    [SerializeField] private float slowAim;
+    [SerializeField] private float fastAim;
+    [SerializeField] private Transform playerBody;
+    [SerializeField] public Transform aim;
+    [SerializeField] private LayerMask ignoreLayer;
 
     #region States
     public ERange_IdleState idleState { get; private set; }
@@ -55,6 +64,9 @@ public class EnemyRange : Enemy
     protected override void Start()
     {
         base.Start();
+        playerBody = player.GetComponent<Player>().playerBody;
+        aim.SetParent(null);
+
         stateMachine.Initialize(idleState);
         enemyVisual.SetupLook();
         SetupWeaponData();
@@ -78,7 +90,7 @@ public class EnemyRange : Enemy
         newBullet.GetComponent<EnemyBullet>().BulletSetup();
 
         Rigidbody rbNewBullet = newBullet.GetComponent<Rigidbody>();
-        Vector3 bulletDirection = (player.transform.position - gunPoint.position + new Vector3(0,1,0)).normalized;
+        Vector3 bulletDirection = (aim.position - gunPoint.position).normalized;
 
         rbNewBullet.mass = 20 / weaponData.bulletSpeed;
         rbNewBullet.velocity = weaponData.ApplyWeaponSpread(bulletDirection) * weaponData.bulletSpeed;
@@ -198,4 +210,38 @@ public class EnemyRange : Enemy
 
         return null;
     }
+
+    #region Smart Aim
+
+    public void UpdateAimPosition()
+    {
+        float aimSpeed = IsAimOnPlayer() ? fastAim : slowAim;
+        aim.position = Vector3.MoveTowards(aim.position, playerBody.position, aimSpeed * Time.deltaTime);
+    }
+
+    public bool IsAimOnPlayer()
+    {
+        float distanceAimToPlayer = Vector3.Distance(aim.position, playerBody.position);
+
+        return distanceAimToPlayer < 1.5;
+    }
+
+    public bool IsSeeingPlayer()
+    {
+        Vector3 myPosition = transform.position + Vector3.up;
+        Vector3 directionToPlayer = playerBody.position - myPosition;
+       
+        if (Physics.Raycast(myPosition, directionToPlayer, out RaycastHit hit, Mathf.Infinity, ~ignoreLayer))
+        {
+            if (hit.transform == player.GetComponentInChildren<CapsuleCollider>().transform)
+            {
+                UpdateAimPosition();
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    #endregion
 }
